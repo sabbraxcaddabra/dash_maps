@@ -3,6 +3,7 @@ from dash import dcc, html, Output, Input, State
 import dash_bootstrap_components as dbc
 import os
 import pandas as pd
+import dash_leaflet as dl
 
 HERE = os.path.dirname(__file__)
 REGIONS_FILE = os.path.abspath(os.path.abspath(os.path.join(HERE, ".", "regi.csv")))
@@ -81,6 +82,7 @@ external_stylesheets = [dbc.themes.GRID,
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True,
                 meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=0.7'}])
+server = app.server
 
 app.layout = dbc.Container(children=[
     dcc.Dropdown(
