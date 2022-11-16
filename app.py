@@ -22,7 +22,7 @@ def set_regio_color_properties(geo_data: dict):
         try:
             true_feature = list(filter(lambda x: reg['Код региона'] == x['properties']['id'], geo_data['features']))[0]
         except IndexError:
-            pass
+            continue
         true_feature['properties']['enrolled'] = reg['Поступило']
         true_feature['properties']['celo'] = reg['Очное - Целевая квота']
         true_feature['properties']['name_ru'] = reg['Название региона']
@@ -79,7 +79,7 @@ def generate_region_cities_layout_enrolled(region_c_df: pd.DataFrame):
         columns=[{"name": i, "id": i} for i in region_c_df.columns],
         style_cell={'textAlign': 'left'},
         sort_action="native",
-        page_size=10
+        page_size=15
     )
 
     return table
@@ -165,12 +165,14 @@ app.layout = dbc.Container(children=[
 ], fluid='sm')#style={'marginLeft': 250, 'marginRight': 250})
 
 @app.callback(
-    [Output("regio_modal", "is_open"), Output("regio_modal_title", 'children'), Output('regio_modal_body', 'children')],
+    [Output("regio_modal", "is_open"),
+     Output("regio_modal_title", 'children'), Output('regio_modal_body', 'children'),
+     Output("regions", "click_feature") # Нужно обязательно, так как дэш не обработает вызов с теми же аргументами
+     ],
     [Input("regions", "click_feature")],
     [State('regio_modal', 'is_open'), State("type_stat", "value")]
 )
 def show_modal(feature, is_open, type_stat):
-    print(is_open)
     if not feature:
         raise dash.exceptions.PreventUpdate
 
@@ -190,7 +192,7 @@ def show_modal(feature, is_open, type_stat):
                 reg_c_table
             ]
         )
-        return not is_open, reg_name, lout
+        return not is_open, reg_name, lout, None
 
 
 @app.callback(Output("info", "children"), [Input("regions", "hover_feature")])
