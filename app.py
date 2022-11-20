@@ -121,7 +121,16 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_ca
 server = app.server
 
 enrolled_classes = [0, 10, 20, 50, 100, 200, 500, 1000] # Отсечки для категорий зачисленных
-enrolled_colorscale = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'] # Цвета для зачисленных
+enrolled_colorscale = [
+    '#71a1d8',
+    '#5491da',
+    '#3680dc',
+    '#0e6fdb',
+    '#005cd9',
+    '#0048d4',
+    '#0031cd',
+    '#1e08c2',
+] # Цвета для зачисленных
 style = dict(weight=2, opacity=1, color='white', dashArray='3', fillOpacity=0.7)
 enrolled_ctg = ["{}+".format(cls, enrolled_classes[i + 1]) for i, cls in enumerate(enrolled_classes[:-1])] + ["{}+".format(enrolled_classes[-1])] # Категории для зачисленных
 enrolled_colorbar = dlx.categorical_colorbar(categories=enrolled_ctg, colorscale=enrolled_colorscale, width=300, height=30, position="bottomleft") # Цветовая карта для зачисленных
