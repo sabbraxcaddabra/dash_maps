@@ -122,6 +122,7 @@ server = app.server
 
 enrolled_classes = [0, 10, 20, 50, 100, 200, 500, 1000] # Отсечки для категорий зачисленных
 enrolled_colorscale = [
+    '#ffffff',
     '#71a1d8',
     '#5491da',
     '#3680dc',
@@ -132,19 +133,23 @@ enrolled_colorscale = [
     '#1e08c2',
 ] # Цвета для зачисленных
 style = dict(weight=2, opacity=1, color='white', dashArray='3', fillOpacity=0.7)
-enrolled_ctg = ["{}+".format(cls, enrolled_classes[i + 1]) for i, cls in enumerate(enrolled_classes[:-1])] + ["{}+".format(enrolled_classes[-1])] # Категории для зачисленных
+enrolled_ctg = ['0'] + ["{}+".format(cls, enrolled_classes[i + 1]) for i, cls in enumerate(enrolled_classes[:-1])] + ["{}+".format(enrolled_classes[-1])] # Категории для зачисленных
 enrolled_colorbar = dlx.categorical_colorbar(categories=enrolled_ctg, colorscale=enrolled_colorscale, width=300, height=30, position="bottomleft") # Цветовая карта для зачисленных
 # Функия на ЖС для определения цвета на стороне браузера
-style_handle = assign("""function(feature, context){
+style_handle = assign(src="""function(feature, context){
     const {classes, colorscale, style, colorProp} = context.props.hideout;  // get props from hideout
     const value = feature.properties[colorProp];  // get value the determines the color
-    for (let i = 0; i < classes.length; ++i) {
-        if (value > classes[i]) {
-            style.fillColor = colorscale[i];  // set the fill color according to the class
+    if (value == 0){
+        style.fillColor = colorscale[0];
+    } else {
+        for (let i = 0; i < classes.length; ++i) {
+            if (value > classes[i]) {
+                style.fillColor = colorscale[i+1];  // set the fill color according to the class
+            }
         }
     }
     return style;
-}""")
+}""", name='color_handler')
 
 # Создание общего жсона. При необходимости подменяется параметр hideout в колбэке(наверное)
 geojson = dl.GeoJSON(data=GEO_DATA,  # url to geojson file
